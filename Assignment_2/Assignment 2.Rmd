@@ -1,0 +1,86 @@
+---
+title: "Assignment2"
+output: html_document
+date: "2022-09-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(class)
+library(caret)
+library(ISLR)
+library(gmodels)
+summary(UniversalBank)
+mydata<- read.csv(file ='UniversalBank.csv')
+q <- class2ind(as.factor(mydata$Education))
+colnames(q)<-c('Education_1' ,'Education_2' , 'Education_3')
+mydata2<- cbind(mydata[,2:7],q,mydata[,9:14])
+```
+
+```{r}
+norm_model <- preProcess(mydata2, method= c("range"))
+mydata_normalized<- predict(norm_model,mydata2)
+```
+
+```{r}
+mydata_normalized <- mydata_normalized[,-2]
+Index_Train <- createDataPartition(mydata_normalized$Income , p=0.6, list = FALSE)
+Train <- mydata_normalized[Index_Train,]
+Test <- mydata_normalized[-Index_Train,]
+```
+
+
+```{r}
+DataFrame <- data.frame(Age=40, Experience=10, Income = 84, Family = 2, CCAvg= 2, Education_1 = 0, Education_2 = 1, Education_3 = 0, Mortgage = 0, Securities.Account = 0, CD.Account = 0, Online = 1, CreditCard= 1)
+Train_Predictors<- Train[,2:3]
+Test_Predictors<- Test[,2:3]
+DataFrame_Predictors<- DataFrame[,2:3]
+
+Train_labels<- Train[,1]
+Test_labels<- Test[,1]
+
+```
+
+```{r}
+Predicted_Test_Labels<- knn(Train_Predictors, DataFrame_Predictors,cl=Train_labels, k=1)
+head(Predicted_Test_Labels)
+```
+
+```{r}
+model<-train(UniversalBank~balance+income, data=mydata_normalized,method="knn")
+model
+```
+```{r}
+Predicted_Test_Labels <- knn(Train_Predictors, Test_Predictors, cl=Train_labels, k=15)
+CrossTable(x=Test_labels, y=Predicted_Test_Labels, prop.chisq = FALSE)
+```
+```{r}
+DataFrame2 <- data.frame(Age=40, Experience=10, Income = 84, Family = 2, CCAvg= 2, Education_1 = 0, Education_2 = 1, Education_3 = 0, Mortgage = 0, Securities.Account = 0, CD.Account = 0, Online = 1, CreditCard= 1)
+Train_Predictors2<- Train[,2:3]
+Test_Predictors2<- Test[,2:3]
+DataFrame_Predictors2<- DataFrame[,2:3]
+
+Train_labels2<- Train[,1]
+Test_labels2<- Test[,1]
+
+```
+```{r}
+Predicted_Test_Labels2<- knn(Train_Predictors2, DataFrame_Predictors2,cl=Train_labels2, k=15)
+head(Predicted_Test_Labels2)
+```
+```{r}
+Index_Train2<- createDataPartition(mydata_normalized$income) , p=0.5, list= FALSE)
+Train2<- mydata_normalized[index_Train2,]
+index_validation2<- createDataPartition(Train2$Income, p=0.3, list = FALSE)
+validation2<- mydata_normalized[index_validation2]
+Test2<- mydata_normalized[index_validation2,]
+```
+```{r}
+Predicted_Test_Labels2 <- knn(Train_Predictors2, Test_Predictors2,cl=Train_labels2, k=15)
+CrossTable(x=Test_labels2,y=Predicted_Test_Labels2, prop.chisq = FALSE)
+```
+
