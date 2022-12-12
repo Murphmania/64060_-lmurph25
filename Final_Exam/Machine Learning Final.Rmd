@@ -1,0 +1,68 @@
+---
+title: "Machine Learning Final Project"
+output:
+  pdf_document: default
+  html_document: default
+date: "2022-12-08"
+---
+```{r}
+library(dbscan)
+```
+```{r}
+library(factoextra)
+```
+```{r}
+library(fpc)
+```
+```{r}
+library(tidyverse)
+```
+```{r}
+library(ISLR)
+```
+
+
+```{r}
+mydata<-read.csv('Nintendo.csv')
+```
+
+```{r}
+summary(mydata$Sales)
+```
+```{r}
+df<-mydata[,-c(3,4,6,7)]
+df<-df[df$Sales >= 10000000,]
+
+summary(df)
+```
+```{r}
+show(df)
+```
+```{r}
+d<-dist(df, method = "euclidean")
+hcl<-hclust(d,method = "complete")
+plot(hcl,labels = df$Developer, cex = 0.55, hang = 0.2)
+```
+```{r}
+hc_diana<-diana(df$Sales)
+hc_diana$dc
+```
+```{r}
+pltree(hc_diana,labels=df$Developer,cex=0.55,hang=0.2)
+```
+```{r}
+df<-df
+d<-dist(df,method = "euclidean")
+hc_complete<-hclust(d,method = "complete")
+plot(hc_complete, cex=0.55)
+rect.hclust(hc_complete, k=4, border = 1:4)
+```
+
+
+
+
+
+
+
+
+
